@@ -1,0 +1,34 @@
+Qty,Part Reference,Part Number,Manufacturer,DigiKey Part Number,Description,Footprint
+1,U1,LM2576D2T-005G,ON Semiconductor,LM2576D2T-005GOS-ND,switching regulator,TO-263-6
+1,U2,SN74LVC126ADR,Texas Instruments,296-8457-1-ND,quad buffer,14-SOIC
+1,U3,APX809-44SAG-7,Diodes Inc,APX809-44SAGDICT-ND,microprocessor reset,SOT-23-3
+1,U4,TPS27081ADDCR,Texas Instruments,296-34970-1-ND,high-side load switch,TSOT-23-6
+1,U5,"PCF8523T/1,118",NXP Semiconductors,568-5306-1-ND,real-time clock,8-SOIC
+1,D1,LTST-C171KGKT,Lite-On Inc,160-1426-1-ND,LED green,0805
+1,D2,LTST-C171KSKT,Lite-On Inc,160-1428-1-ND,LED yellow,0805
+1,D3,MBRS340T3G,ON Semiconductor,MBRS340T3GOSCT-ND,schottky diode,DO-214AB
+1,D4,BAT54SLT1G,ON Semiconductor,BAT54SLT1GOSCT-ND,dual schottky diode,SOT-23-3
+4,R1 R2 R7 R15,RMCF0805JT1K00,Stackpole Electronics Inc,RMCF0805JT1K00CT-ND,resistor 1k,0805
+5,R3 R4 R5 R6 R8,RMCF0805JT10K0,Stackpole Electronics Inc,RMCF0805JT10K0CT-ND,resistor 10k,0805
+1,R12,RMCF0805JT100K,Stackpole Electronics Inc,RMCF0805JT100KCT-ND,resistor 100k,0805
+3,R10 R11 R16,RMCF0805JT330R,Stackpole Electronics Inc,RMCF0805JT330RCT-ND,resistor 330R,0805
+1,R13,RR1220P-682-D,Susumu,RR12P6.8KDCT-ND,resistor 6k8 0.5%,0805
+1,R14,RR1220P-393-D,Susumu,RR12P39.0KDCT-ND,resistor 39k 0.5%,0805
+1,C1,EEE-FK1V331P,Panasonic Electronic Components,PCE3841CT-ND,aluminum capacitor 330uF,SMD 10.3mm x 10.3mm
+1,C2,EEE-FK1A102P,Panasonic Electronic Components,PCE3772CT-ND,aluminum capacitor 1000uF,SMD 10.3mm x 10.3mm
+3,C3 C6 C7,CC0805KKX7R7BB105,Yageo,311-1365-1-ND,ceramic capacitor 1.0uF,0805
+2,C4 C5,C0805C104K5RACTU,Kemet,399-1170-1-ND,ceramic capacitor 0.1uF,0805
+1,L1,SRR1280-101M,Bourns Inc,SRR1280-101MTR-ND,inductor 100uH,SMD 12.5mm x 12.5mm
+1,L2,MH2029-600Y,Bourns Inc,MH2029-600YCT-ND,ferrite bead,0805
+1,X1,CFS206-32.768KDZF-UB,Citizen,300-8303-ND,crystal 32.768kHz,through-hole 2mm x 6mm
+2,J1A J1B,PPPC201LFBN-RC,Sullins Connector Solutions,S7053-ND,header female 1x20,"through-hole 0.1"" 1x20"
+1,J2,PJ-002A,CUI Inc,CP-002A-ND,DC power jack 2.1mm/5.5m,through-hole
+1,J3,OSTTE020104,On Shore Technology Inc,ED2740-ND,terminal block 2p,through-hole 3.5mm 2p
+1,J7,M20-9990245,Harwin Inc,952-2261-ND,jumper/header,"through-hole 0.1"" 1x2"
+1,J8,734120110,Molex Inc,WM5587CT-ND,ultraminiature coax connector,SMD 4mm x 4mm
+1,J9,5-1814400-1,TE Connectivity,A97593-ND,SMA connector right angle,through-hole
+1,P1,PPPC132LFBN-RC,Sullins Connector Solutions,S7116-ND,header female 2x13,"through-hole 0.1"" 2x13"
+1,P5,PPPC042LFBN-RC,Sullins Connector Solutions,S7107-ND,header female 2x4,"through-hole 0.1"" 2x4"
+1,B1,3000,Keystone Electronics,3000K-ND,12mm coin battery holder,SMD
+1,SW1,FSM4JH,TE Connectivity,450-1650-ND,tactile switch,through-hole 6mm x 6mm
+7,J4 J5 J6,,,,optional connectors,"through-hole 0.1"""
