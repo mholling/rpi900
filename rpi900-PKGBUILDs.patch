@@ -1,0 +1,124 @@
+diff --git a/core/linux-raspberrypi/PKGBUILD b/core/linux-raspberrypi/PKGBUILD
+index b467365..47df135 100644
+--- a/core/linux-raspberrypi/PKGBUILD
++++ b/core/linux-raspberrypi/PKGBUILD
+@@ -21,6 +21,8 @@ source=('config'
+         'usb-add-reset-resume-quirk-for-several-webcams.patch'
+         'args-uncompressed.txt'
+         'boot-uncompressed.txt'
++        'rpi900-pcf8523-i2c-register.patch'
++        'rpi900-pcf8523-config.patch'
+         'imagetool-uncompressed.py')
+ 
+ md5sums=('7488286136ab030185807a8a889fea99'
+@@ -28,6 +30,8 @@ md5sums=('7488286136ab030185807a8a889fea99'
+          'd00814b57448895e65fbbc800e8a58ba'
+          '9335d1263fd426215db69841a380ea26'
+          'a00e424e2fbb8c5a5f77ba2c4871bed4'
++         'f9719bb692f28c6e47bf1559783115ee'
++         'fdd1960be39a5dcd98fc8823fd95fb26'
+          '2f82dbe5752af65ff409d737caf11954')
+ 
+ build() {
+@@ -39,6 +43,9 @@ msg "Patches:"
+   #msg2 "Add upstream patch"
+   #patch -p1 -i "${srcdir}/patch-${pkgver}"
+ 
++  msg2 "Add PCF8523 rtc to hardware platform"
++  patch -Np1 -i "${srcdir}/rpi900-pcf8523-i2c-register.patch"
++
+   msg2 "Add the USB_QUIRK_RESET_RESUME for several webcams"
+   # FS#26528
+   patch -Np1 -i "${srcdir}/usb-add-reset-resume-quirk-for-several-webcams.patch"
+@@ -58,6 +65,9 @@ msg "Patches:"
+   #sed -ri "s|^(CONFIG_LOCALVERSION=\").*|\1\-ARCH\"|" .config
+   cat "${srcdir}/config" > ./.config
+ 
++  msg2 "Patch config to enable PCF8523"
++  patch -Np1 -i "${srcdir}/rpi900-pcf8523-config.patch"
++
+ msg "Prepare to build"
+   # set extraversion to pkgrel
+   sed -ri "s|^(EXTRAVERSION =).*|\1 -${pkgrel}|" Makefile
+diff --git a/core/linux-raspberrypi/rpi900-pcf8523-config.patch b/core/linux-raspberrypi/rpi900-pcf8523-config.patch
+new file mode 100644
+index 0000000..135466c
+--- /dev/null
++++ b/core/linux-raspberrypi/rpi900-pcf8523-config.patch
+@@ -0,0 +1,40 @@
++diff --git a/.config b/.config
++index 625ad60..81b551e 100644
++--- a/.config
+++++ b/.config
++@@ -1739,7 +1739,7 @@ CONFIG_BCM_VC_CMA=y
++ CONFIG_I2C=y
++ CONFIG_I2C_BOARDINFO=y
++ CONFIG_I2C_COMPAT=y
++-CONFIG_I2C_CHARDEV=m
+++CONFIG_I2C_CHARDEV=y
++ CONFIG_I2C_MUX=m
++ 
++ #
++@@ -1758,7 +1758,7 @@ CONFIG_I2C_ALGOBIT=y
++ #
++ # I2C system bus drivers (mostly embedded / system-on-chip)
++ #
++-CONFIG_I2C_BCM2708=m
+++CONFIG_I2C_BCM2708=y
++ CONFIG_I2C_BCM2708_BAUDRATE=100000
++ # CONFIG_I2C_CBUS_GPIO is not set
++ # CONFIG_I2C_DESIGNWARE_PLATFORM is not set
++@@ -3071,7 +3071,7 @@ CONFIG_LEDS_TRIGGER_DEFAULT_ON=m
++ # CONFIG_EDAC is not set
++ CONFIG_RTC_LIB=y
++ CONFIG_RTC_CLASS=y
++-# CONFIG_RTC_HCTOSYS is not set
+++CONFIG_RTC_HCTOSYS=y
++ CONFIG_RTC_SYSTOHC=y
++ CONFIG_RTC_HCTOSYS_DEVICE="rtc0"
++ # CONFIG_RTC_DEBUG is not set
++@@ -3098,7 +3098,7 @@ CONFIG_RTC_DRV_RS5C372=m
++ CONFIG_RTC_DRV_ISL1208=m
++ CONFIG_RTC_DRV_ISL12022=m
++ CONFIG_RTC_DRV_X1205=m
++-CONFIG_RTC_DRV_PCF8523=m
+++CONFIG_RTC_DRV_PCF8523=y
++ CONFIG_RTC_DRV_PCF8563=m
++ CONFIG_RTC_DRV_PCF8583=m
++ CONFIG_RTC_DRV_M41T80=m
+diff --git a/core/linux-raspberrypi/rpi900-pcf8523-i2c-register.patch b/core/linux-raspberrypi/rpi900-pcf8523-i2c-register.patch
+new file mode 100644
+index 0000000..3817af5
+--- /dev/null
++++ b/core/linux-raspberrypi/rpi900-pcf8523-i2c-register.patch
+@@ -0,0 +1,30 @@
++diff --git a/arch/arm/mach-bcm2708/bcm2708.c b/arch/arm/mach-bcm2708/bcm2708.c
++index 13b91de..390a3ff 100644
++--- a/arch/arm/mach-bcm2708/bcm2708.c
+++++ b/arch/arm/mach-bcm2708/bcm2708.c
++@@ -617,6 +617,12 @@ static struct platform_device bcm2835_thermal_device = {
++ 	.name = "bcm2835_thermal",
++ };
++ 
+++static struct i2c_board_info offboard_i2c_devices[] = {
+++	{
+++		I2C_BOARD_INFO("pcf8523", 0x68),
+++	},
+++};
+++
++ int __init bcm_register_device(struct platform_device *pdev)
++ {
++ 	int ret;
++@@ -754,6 +760,12 @@ void __init bcm2708_init(void)
++ 	spi_register_board_info(bcm2708_spi_devices,
++ 			ARRAY_SIZE(bcm2708_spi_devices));
++ #endif
+++
+++	/* test system revision to deterimine I2C bus number for GPIO header */
+++	i = system_rev < 4 ? 0 : 1;
+++	i2c_register_board_info(i, offboard_i2c_devices,
+++				ARRAY_SIZE(offboard_i2c_devices));
+++
++ }
++ 
++ static void timer_set_mode(enum clock_event_mode mode,
