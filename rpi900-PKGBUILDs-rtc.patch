@@ -1,45 +1,41 @@
 diff --git a/core/linux-raspberrypi/PKGBUILD b/core/linux-raspberrypi/PKGBUILD
-index b467365..47df135 100644
+index fe9c6d5..b6ece20 100644
 --- a/core/linux-raspberrypi/PKGBUILD
 +++ b/core/linux-raspberrypi/PKGBUILD
-@@ -21,6 +21,8 @@ source=('config'
-         'usb-add-reset-resume-quirk-for-several-webcams.patch'
+@@ -19,6 +19,8 @@ source=("https://github.com/raspberrypi/linux/archive/${_commit}.tar.gz"
+         'config'
+         'change-default-console-loglevel.patch'
          'args-uncompressed.txt'
-         'boot-uncompressed.txt'
 +        'rpi900-pcf8523-i2c-register.patch'
 +        'rpi900-pcf8523-config.patch'
-         'imagetool-uncompressed.py')
- 
- md5sums=('7488286136ab030185807a8a889fea99'
-@@ -28,6 +30,8 @@ md5sums=('7488286136ab030185807a8a889fea99'
-          'd00814b57448895e65fbbc800e8a58ba'
+         'boot-uncompressed.txt'
+         'imagetool-uncompressed.py'
+         "git://git.code.sf.net/p/aufs/aufs3-standalone#branch=aufs${pkgver%.*}")
+@@ -27,6 +29,8 @@ md5sums=('702b8b975361e6aec704570b57888ad1'
+          'a41149002ecf0c36dfd9833e4d445c23'
+          '9d3c56a4b999c8bfbd4018089a62f662'
           '9335d1263fd426215db69841a380ea26'
-          'a00e424e2fbb8c5a5f77ba2c4871bed4'
 +         'f9719bb692f28c6e47bf1559783115ee'
 +         'fdd1960be39a5dcd98fc8823fd95fb26'
-          '2f82dbe5752af65ff409d737caf11954')
+          'a00e424e2fbb8c5a5f77ba2c4871bed4'
+          '2f82dbe5752af65ff409d737caf11954'
+          'SKIP')
+@@ -55,6 +59,7 @@ prepare() {
+   patch -Np1 -i ../aufs3-standalone/aufs3-standalone.patch
+ 
+   cat "${srcdir}/config" > ./.config
++  patch -Np1 -i "${srcdir}/rpi900-pcf8523-config.patch"
+ 
+   # add pkgrel to extraversion
+   sed -ri "s|^(EXTRAVERSION =)(.*)|\1 \2-${pkgrel}|" Makefile
+@@ -65,6 +70,7 @@ prepare() {
  
  build() {
-@@ -39,6 +43,9 @@ msg "Patches:"
-   #msg2 "Add upstream patch"
-   #patch -p1 -i "${srcdir}/patch-${pkgver}"
- 
-+  msg2 "Add PCF8523 rtc to hardware platform"
+   cd "${srcdir}/${_srcname}"
 +  patch -Np1 -i "${srcdir}/rpi900-pcf8523-i2c-register.patch"
-+
-   msg2 "Add the USB_QUIRK_RESET_RESUME for several webcams"
-   # FS#26528
-   patch -Np1 -i "${srcdir}/usb-add-reset-resume-quirk-for-several-webcams.patch"
-@@ -58,6 +65,9 @@ msg "Patches:"
-   #sed -ri "s|^(CONFIG_LOCALVERSION=\").*|\1\-ARCH\"|" .config
-   cat "${srcdir}/config" > ./.config
  
-+  msg2 "Patch config to enable PCF8523"
-+  patch -Np1 -i "${srcdir}/rpi900-pcf8523-config.patch"
-+
- msg "Prepare to build"
-   # set extraversion to pkgrel
-   sed -ri "s|^(EXTRAVERSION =).*|\1 -${pkgrel}|" Makefile
+   # get kernel version
+   make prepare
 diff --git a/core/linux-raspberrypi/rpi900-pcf8523-config.patch b/core/linux-raspberrypi/rpi900-pcf8523-config.patch
 new file mode 100644
 index 0000000..135466c
