@@ -24,7 +24,7 @@ index fe9c6d5..b6ece20 100644
    patch -Np1 -i ../aufs3-standalone/aufs3-standalone.patch
  
    cat "${srcdir}/config" > ./.config
-+  patch -Np1 -i "${srcdir}/rpi900-pcf8523-config.patch"
++  patch -Np1 -F 3 -i "${srcdir}/rpi900-pcf8523-config.patch"
  
    # add pkgrel to extraversion
    sed -ri "s|^(EXTRAVERSION =)(.*)|\1 \2-${pkgrel}|" Makefile
